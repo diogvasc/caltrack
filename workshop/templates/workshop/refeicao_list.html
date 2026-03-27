@@ -1,0 +1,41 @@
+{% extends 'workshop/base.html' %}
+
+{% block title %}Refeições — CalorieTracker{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Refeições</h1>
+    <p>{{ refeicoes|length }} refeições registadas</p>
+</div>
+
+<div class="table-wrap">
+    {% if refeicoes %}
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Tipo</th>
+                <th>Data</th>
+                <th>Hora</th>
+                <th>Utilizador</th>
+                <th>Nº Alimentos</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in refeicoes %}
+            <tr>
+                <td style="color:var(--muted); font-family:var(--mono); font-size:0.75rem;">{{ r.id }}</td>
+                <td><span class="badge">{{ r.get_tipo_display }}</span></td>
+                <td style="font-family:var(--mono); font-size:0.82rem;">{{ r.registo.data }}</td>
+                <td style="color:var(--muted); font-family:var(--mono); font-size:0.82rem;">{{ r.hora|default:"—" }}</td>
+                <td>{{ r.registo.utilizador.username }}</td>
+                <td><span class="badge teal">{{ r.itens.count }}</span></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty">Nenhuma refeição encontrada.</div>
+    {% endif %}
+</div>
+{% endblock %}

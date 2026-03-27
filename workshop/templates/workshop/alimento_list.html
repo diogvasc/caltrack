@@ -1,0 +1,49 @@
+{% extends 'workshop/base.html' %}
+
+{% block title %}Alimentos — CalorieTracker{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Alimentos</h1>
+    <p>{{ alimentos|length }} alimentos registados</p>
+</div>
+
+<div class="table-wrap">
+    {% if alimentos %}
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Nome</th>
+                <th>Categoria</th>
+                <th>Calorias (kcal/100g)</th>
+                <th>Proteína (g)</th>
+                <th>Hidratos (g)</th>
+                <th>Gordura (g)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for a in alimentos %}
+            <tr>
+                <td style="color:var(--muted); font-family:var(--mono); font-size:0.75rem;">{{ a.id }}</td>
+                <td><strong>{{ a.nome }}</strong></td>
+                <td>
+                    {% if a.categoria %}
+                        <span class="badge">{{ a.categoria.nome }}</span>
+                    {% else %}
+                        <span style="color:var(--muted)">—</span>
+                    {% endif %}
+                </td>
+                <td><span class="badge teal">{{ a.calorias_por_100g }}</span></td>
+                <td>{{ a.proteina_g }}</td>
+                <td>{{ a.hidratos_g }}</td>
+                <td>{{ a.gordura_g }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty">Nenhum alimento encontrado.</div>
+    {% endif %}
+</div>
+{% endblock %}

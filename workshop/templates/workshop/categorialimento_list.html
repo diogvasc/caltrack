@@ -1,0 +1,37 @@
+{% extends 'workshop/base.html' %}
+
+{% block title %}Categorias — CalorieTracker{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Categorias de Alimentos</h1>
+    <p>{{ categorias|length }} categorias registadas</p>
+</div>
+
+<div class="table-wrap">
+    {% if categorias %}
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Nome</th>
+                <th>Descrição</th>
+                <th>Nº Alimentos</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for c in categorias %}
+            <tr>
+                <td style="color:var(--muted); font-family:var(--mono); font-size:0.75rem;">{{ c.id }}</td>
+                <td><strong>{{ c.nome }}</strong></td>
+                <td style="color:var(--muted)">{{ c.descricao|default:"—" }}</td>
+                <td><span class="badge">{{ c.alimentos.count }}</span></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty">Nenhuma categoria encontrada.</div>
+    {% endif %}
+</div>
+{% endblock %}

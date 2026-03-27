@@ -1,0 +1,47 @@
+{% extends 'workshop/base.html' %}
+ 
+{% block title %}Objetivos — CalorieTracker{% endblock %}
+ 
+{% block content %}
+<div class="page-header">
+    <h1>Objetivos</h1>
+    <p>{{ objetivos|length }} objetivos definidos</p>
+</div>
+ 
+<div class="table-wrap">
+    {% if objetivos %}
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Utilizador</th>
+                <th>Calorias Alvo</th>
+                <th>Proteína (g)</th>
+                <th>Hidratos (g)</th>
+                <th>Gordura (g)</th>
+                <th>Início</th>
+                <th>Fim</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for o in objetivos %}
+            <tr>
+                <td style="color:var(--muted); font-family:var(--mono); font-size:0.75rem;">{{ o.id }}</td>
+                <td><strong>{{ o.utilizador.username }}</strong></td>
+                <td><span class="badge teal">{{ o.calorias_alvo }} kcal</span></td>
+                <td>{{ o.proteina_alvo_g }}</td>
+                <td>{{ o.hidratos_alvo_g }}</td>
+                <td>{{ o.gordura_alvo_g }}</td>
+                <td style="font-family:var(--mono); font-size:0.82rem;">{{ o.data_inicio }}</td>
+                <td style="font-family:var(--mono); font-size:0.82rem;">{{ o.data_fim|default:"—" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty">Nenhum objetivo encontrado.</div>
+    {% endif %}
+</div>
+{% endblock %}
+ 
+

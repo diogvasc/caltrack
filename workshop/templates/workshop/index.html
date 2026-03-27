@@ -1,0 +1,38 @@
+{% extends 'workshop/base.html' %}
+
+{% block title %}Dashboard – CalorieTracker{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Dashboard</h1>
+    <p>Resumo da base de dados</p>
+</div>
+
+<div class="stats-grid">
+    <a href="{% url 'categorias' %}" class="stat-card">
+        <div class="stat-label">Categorias</div>
+        <div class="stat-value">{{ num_categorias }}</div>
+        <div class="stat-sub">categorias de alimentos</div>
+    </a>
+    <a href="{% url 'alimentos' %}" class="stat-card">
+        <div class="stat-label">Alimentos</div>
+        <div class="stat-value">{{ num_alimentos }}</div>
+        <div class="stat-sub">alimentos registados</div>
+    </a>
+    <a href="{% url 'registos' %}" class="stat-card">
+        <div class="stat-label">Registos</div>
+        <div class="stat-value">{{ num_registos }}</div>
+        <div class="stat-sub">registos diários</div>
+    </a>
+    <a href="{% url 'registos' %}" class="stat-card">
+        <div class="stat-label">Refeições</div>
+        <div class="stat-value">{{ num_refeicoes }}</div>
+        <div class="stat-sub">refeições no total</div>
+    </a>
+    <a href="#" class="stat-card">
+        <div class="stat-label">Objetivos</div>
+        <div class="stat-value">{{ num_objetivos }}</div>
+        <div class="stat-sub">objetivos definidos</div>
+    </a>
+</div>
+{% endblock %}
