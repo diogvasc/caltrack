@@ -1,25 +1,27 @@
 {% extends 'workshop/base.html' %}
- 
 {% block title %}Objetivos — CalorieTracker{% endblock %}
- 
 {% block content %}
-<div class="page-header">
-    <h1>Objetivos</h1>
-    <p>{{ objetivos|length }} objetivos definidos</p>
+<div class="page-header" style="display:flex; align-items:center; justify-content:space-between;">
+    <div>
+        <h1>Objetivos</h1>
+        <p>{{ objetivos|length }} objetivos definidos</p>
+    </div>
+    <a href="{% url 'objetivo_criar' %}" class="btn-add">+ Adicionar objetivo</a>
 </div>
- 
+
 <div class="table-wrap">
     {% if objetivos %}
     <table>
         <thead>
             <tr>
                 <th>Utilizador</th>
-                <th>Calorias Alvo</th>
+                <th>Calorias alvo</th>
                 <th>Proteína (g)</th>
                 <th>Hidratos (g)</th>
                 <th>Gordura (g)</th>
                 <th>Início</th>
                 <th>Fim</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -32,14 +34,14 @@
                 <td>{{ o.gordura_alvo_g }}</td>
                 <td style="font-family:var(--mono); font-size:0.82rem;">{{ o.data_inicio }}</td>
                 <td style="font-family:var(--mono); font-size:0.82rem;">{{ o.data_fim|default:"—" }}</td>
+                <td><a href="{% url 'objetivo_apagar' o.id %}" class="btn-delete">Apagar</a></td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
     {% else %}
-    <div class="empty">Nenhum objetivo encontrado.</div>
+    <div class="empty">Nenhum objetivo encontrado. <a href="{% url 'objetivo_criar' %}" style="color:var(--accent)">Adiciona o primeiro.</a></div>
     {% endif %}
 </div>
+{% include 'workshop/button_style.html' %}
 {% endblock %}
- 
-

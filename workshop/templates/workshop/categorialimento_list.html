@@ -1,11 +1,12 @@
 {% extends 'workshop/base.html' %}
-
 {% block title %}Categorias — CalorieTracker{% endblock %}
-
 {% block content %}
-<div class="page-header">
-    <h1>Categorias de Alimentos</h1>
-    <p>{{ categorias|length }} categorias registadas</p>
+<div class="page-header" style="display:flex; align-items:center; justify-content:space-between;">
+    <div>
+        <h1>Categorias de alimentos</h1>
+        <p>{{ categorias|length }} categorias registadas</p>
+    </div>
+    <a href="{% url 'categoria_criar' %}" class="btn-add">+ Adicionar categoria</a>
 </div>
 
 <div class="table-wrap">
@@ -16,6 +17,7 @@
                 <th>Nome</th>
                 <th>Descrição</th>
                 <th>Nº Alimentos</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -24,12 +26,14 @@
                 <td><strong>{{ c.nome }}</strong></td>
                 <td style="color:var(--muted)">{{ c.descricao|default:"—" }}</td>
                 <td><span class="badge">{{ c.alimentos.count }}</span></td>
+                <td><a href="{% url 'categoria_apagar' c.id %}" class="btn-delete">Apagar</a></td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
     {% else %}
-    <div class="empty">Nenhuma categoria encontrada.</div>
+    <div class="empty">Nenhuma categoria encontrada. <a href="{% url 'categoria_criar' %}" style="color:var(--accent)">Adiciona a primeira.</a></div>
     {% endif %}
 </div>
+{% include 'workshop/button_style.html' %}
 {% endblock %}

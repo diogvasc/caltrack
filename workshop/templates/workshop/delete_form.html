@@ -1,20 +1,20 @@
 {% extends 'workshop/base.html' %}
 
-{% block title %}Apagar Alimento — CalorieTracker{% endblock %}
+{% block title %}Apagar — CalorieTracker{% endblock %}
 
 {% block content %}
 <div class="page-header">
-    <h1>Apagar alimento</h1>
+    <h1>Confirmar remoção</h1>
 </div>
 
 <div class="confirm-card">
-    <p>Tens a certeza que queres apagar <strong>{{ object.nome }}</strong>?</p>
+    <p>Tens a certeza que queres apagar <strong>{{ object }}</strong>?</p>
     <p class="warn">Esta ação não pode ser desfeita.</p>
 
     <form method="post">
         {% csrf_token %}
         <div class="form-actions">
-            <a href="{% url 'alimentos' %}" class="btn-cancel">Cancelar</a>
+            <a href="{{ voltar_url }}" class="btn-cancel">Cancelar</a>
             <button type="submit" class="btn-delete">Sim, apagar</button>
         </div>
     </form>
@@ -28,28 +28,10 @@
     padding: 2rem;
     max-width: 460px;
 }
-
-.confirm-card p {
-    font-size: 0.95rem;
-    margin-bottom: 0.5rem;
-}
-
-.confirm-card strong {
-    color: var(--accent);
-}
-
-.warn {
-    color: #e04444;
-    font-size: 0.82rem !important;
-    margin-bottom: 1.5rem !important;
-}
-
-.form-actions {
-    display: flex;
-    gap: 0.75rem;
-    margin-top: 1.5rem;
-}
-
+.confirm-card p { font-size: 0.95rem; margin-bottom: 0.5rem; }
+.confirm-card strong { color: var(--accent); }
+.warn { color: #e04444; font-size: 0.82rem !important; margin-bottom: 1.5rem !important; }
+.form-actions { display: flex; gap: 0.75rem; margin-top: 1.5rem; }
 .btn-delete {
     padding: 0.55rem 1.25rem;
     background: #e04444;
@@ -62,7 +44,6 @@
     transition: opacity 0.15s;
 }
 .btn-delete:hover { opacity: 0.85; }
-
 .btn-cancel {
     padding: 0.55rem 1.25rem;
     background: var(--surface2);
