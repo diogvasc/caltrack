@@ -13,7 +13,6 @@
     <table>
         <thead>
             <tr>
-                <th>#</th>
                 <th>Nome</th>
                 <th>Descrição</th>
                 <th>Nº Alimentos</th>
@@ -22,7 +21,6 @@
         <tbody>
             {% for c in categorias %}
             <tr>
-                <td style="color:var(--muted); font-family:var(--mono); font-size:0.75rem;">{{ c.id }}</td>
                 <td><strong>{{ c.nome }}</strong></td>
                 <td style="color:var(--muted)">{{ c.descricao|default:"—" }}</td>
                 <td><span class="badge">{{ c.alimentos.count }}</span></td>

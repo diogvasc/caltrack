@@ -13,7 +13,6 @@
     <table>
         <thead>
             <tr>
-                <th>#</th>
                 <th>Utilizador</th>
                 <th>Calorias Alvo</th>
                 <th>Proteína (g)</th>
@@ -26,7 +25,6 @@
         <tbody>
             {% for o in objetivos %}
             <tr>
-                <td style="color:var(--muted); font-family:var(--mono); font-size:0.75rem;">{{ o.id }}</td>
                 <td><strong>{{ o.utilizador.username }}</strong></td>
                 <td><span class="badge teal">{{ o.calorias_alvo }} kcal</span></td>
                 <td>{{ o.proteina_alvo_g }}</td>

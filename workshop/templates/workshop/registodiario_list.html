@@ -13,7 +13,6 @@
     <table>
         <thead>
             <tr>
-                <th>#</th>
                 <th>Utilizador</th>
                 <th>Data</th>
                 <th>Água (ml)</th>
@@ -24,7 +23,6 @@
         <tbody>
             {% for r in registos %}
             <tr>
-                <td style="color:var(--muted); font-family:var(--mono); font-size:0.75rem;">{{ r.id }}</td>
                 <td><strong>{{ r.utilizador.username }}</strong></td>
                 <td style="font-family:var(--mono); font-size:0.82rem;">{{ r.data }}</td>
                 <td><span class="badge teal">{{ r.agua_ml }} ml</span></td>

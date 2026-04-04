@@ -1,0 +1,114 @@
+{% extends 'workshop/base.html' %}
+
+{% block title %}Adicionar Alimento — CalorieTracker{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Adicionar alimento</h1>
+    <p>Preenche os campos abaixo</p>
+</div>
+
+<div class="form-card">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {% for field in form %}
+        <div class="field-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+                <span class="field-error">{{ field.errors|join:", " }}</span>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        <div class="form-actions">
+            <a href="{% url 'alimentos' %}" class="btn-cancel">Cancelar</a>
+            <button type="submit" class="btn-submit">Guardar alimento</button>
+        </div>
+    </form>
+</div>
+
+<style>
+.form-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    max-width: 560px;
+}
+
+.field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 1.25rem;
+}
+
+.field-group label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.field-group input,
+.field-group select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.6rem 0.9rem;
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.15s;
+}
+
+.field-group input:focus,
+.field-group select:focus {
+    border-color: var(--accent);
+}
+
+.field-group select option {
+    background: var(--surface2);
+}
+
+.field-error {
+    font-size: 0.78rem;
+    color: #e04444;
+}
+
+.form-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.btn-submit {
+    padding: 0.55rem 1.25rem;
+    background: var(--accent);
+    color: #0f0f0f;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s;
+}
+.btn-submit:hover { opacity: 0.85; }
+
+.btn-cancel {
+    padding: 0.55rem 1.25rem;
+    background: var(--surface2);
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition: color 0.15s;
+}
+.btn-cancel:hover { color: var(--text); }
+</style>
+{% endblock %}

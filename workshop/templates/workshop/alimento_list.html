@@ -3,9 +3,12 @@
 {% block title %}Alimentos — CalorieTracker{% endblock %}
 
 {% block content %}
-<div class="page-header">
-    <h1>Alimentos</h1>
-    <p>{{ alimentos|length }} alimentos registados</p>
+<div class="page-header" style="display:flex; align-items:center; justify-content:space-between;">
+    <div>
+        <h1>Alimentos</h1>
+        <p>{{ alimentos|length }} alimentos registados</p>
+    </div>
+    <a href="{% url 'alimento_criar' %}" class="btn-add">+ Adicionar alimento</a>
 </div>
 
 <div class="table-wrap">
@@ -13,19 +16,18 @@
     <table>
         <thead>
             <tr>
-                <th>#</th>
                 <th>Nome</th>
                 <th>Categoria</th>
                 <th>Calorias (kcal/100g)</th>
                 <th>Proteína (g)</th>
                 <th>Hidratos (g)</th>
                 <th>Gordura (g)</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
             {% for a in alimentos %}
             <tr>
-                <td style="color:var(--muted); font-family:var(--mono); font-size:0.75rem;">{{ a.id }}</td>
                 <td><strong>{{ a.nome }}</strong></td>
                 <td>
                     {% if a.categoria %}
@@ -38,12 +40,43 @@
                 <td>{{ a.proteina_g }}</td>
                 <td>{{ a.hidratos_g }}</td>
                 <td>{{ a.gordura_g }}</td>
+                <td>
+                    <a href="{% url 'alimento_apagar' a.id %}" class="btn-delete">Apagar</a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
     {% else %}
-    <div class="empty">Nenhum alimento encontrado.</div>
+    <div class="empty">Nenhum alimento encontrado. <a href="{% url 'alimento_criar' %}" style="color:var(--accent)">Adiciona o primeiro.</a></div>
     {% endif %}
 </div>
+
+<style>
+.btn-add {
+    display: inline-block;
+    padding: 0.5rem 1.1rem;
+    background: var(--accent);
+    color: #0f0f0f;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: opacity 0.15s;
+}
+.btn-add:hover { opacity: 0.85; }
+
+.btn-delete {
+    display: inline-block;
+    padding: 0.25rem 0.7rem;
+    background: rgba(224,68,68,0.1);
+    color: #e04444;
+    border: 1px solid rgba(224,68,68,0.2);
+    border-radius: 6px;
+    font-size: 0.75rem;
+    text-decoration: none;
+    transition: background 0.15s;
+}
+.btn-delete:hover { background: rgba(224,68,68,0.2); }
+</style>
 {% endblock %}

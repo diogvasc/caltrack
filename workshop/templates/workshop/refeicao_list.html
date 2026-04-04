@@ -13,7 +13,6 @@
     <table>
         <thead>
             <tr>
-                <th>#</th>
                 <th>Tipo</th>
                 <th>Data</th>
                 <th>Hora</th>
@@ -24,7 +23,6 @@
         <tbody>
             {% for r in refeicoes %}
             <tr>
-                <td style="color:var(--muted); font-family:var(--mono); font-size:0.75rem;">{{ r.id }}</td>
                 <td><span class="badge">{{ r.get_tipo_display }}</span></td>
                 <td style="font-family:var(--mono); font-size:0.82rem;">{{ r.registo.data }}</td>
                 <td style="color:var(--muted); font-family:var(--mono); font-size:0.82rem;">{{ r.hora|default:"—" }}</td>

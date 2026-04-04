@@ -24,12 +24,12 @@
         <div class="stat-value">{{ num_registos }}</div>
         <div class="stat-sub">registos diários</div>
     </a>
-    <a href="{% url 'registos' %}" class="stat-card">
+    <a href="{% url 'refeicoes' %}" class="stat-card">
         <div class="stat-label">Refeições</div>
         <div class="stat-value">{{ num_refeicoes }}</div>
         <div class="stat-sub">refeições no total</div>
     </a>
-    <a href="#" class="stat-card">
+    <a href="{% url 'objetivos' %}" class="stat-card">
         <div class="stat-label">Objetivos</div>
         <div class="stat-value">{{ num_objetivos }}</div>
         <div class="stat-sub">objetivos definidos</div>
