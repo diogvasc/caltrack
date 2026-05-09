@@ -1,23 +1,25 @@
 {% extends 'workshop/base.html' %}
-{% block title %}Registos Diários — CalorieTracker{% endblock %}
+{% block title %}Registos diários — caltrack{% endblock %}
+
 {% block content %}
-<div class="page-header" style="display:flex; align-items:center; justify-content:space-between;">
+<div class="page-head">
     <div>
-        <h1>Registos diários</h1>
-        <p>{{ registos|length }} registos encontrados</p>
+        <h1 class="page-title">Registos diários</h1>
+        <div class="page-sub">{{ registos|length }} dia{{ registos|length|pluralize }} acompanhado{{ registos|length|pluralize }}</div>
     </div>
-    <a href="{% url 'registo_criar' %}" class="btn-add">+ Adicionar registo</a>
+    <div class="page-actions">
+        <a href="{% url 'registo_criar' %}" class="btn btn-primary">+ Registo</a>
+    </div>
 </div>
 
-<div class="table-wrap">
-    {% if registos %}
-    <table>
+{% if registos %}
+<div class="card table-card">
+    <table class="t">
         <thead>
             <tr>
-                <th>Utilizador</th>
                 <th>Data</th>
-                <th>Água (ml)</th>
                 <th>Refeições</th>
+                <th>Água</th>
                 <th>Notas</th>
                 <th></th>
             </tr>
@@ -25,19 +27,25 @@
         <tbody>
             {% for r in registos %}
             <tr>
-                <td><strong>{{ r.utilizador.username }}</strong></td>
-                <td style="font-family:var(--mono); font-size:0.82rem;">{{ r.data }}</td>
-                <td><span class="badge teal">{{ r.agua_ml }} ml</span></td>
-                <td><span class="badge">{{ r.refeicoes.count }}</span></td>
-                <td style="color:var(--muted)">{{ r.notas|default:"—" }}</td>
-                <td><a href="{% url 'registo_apagar' r.id %}" class="btn-delete">Apagar</a></td>
+                <td><span class="t-num">{{ r.data }}</span></td>
+                <td><span class="pill pill-lime"><span class="pill-dot"></span>{{ r.refeicoes.count }}</span></td>
+                <td><span class="t-num" style="color:var(--sky)">{{ r.agua_ml|floatformat:0 }}</span> <span style="color:var(--muted); font-size:11px;">ml</span></td>
+                <td style="color:var(--text-2); max-width:340px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ r.notas|default:"—" }}</td>
+                <td>
+                    <div class="t-actions">
+                        <a href="{% url 'registo_editar' r.id %}" class="btn btn-ghost" style="font-size:12px;">Editar</a>
+                        <a href="{% url 'registo_apagar' r.id %}" class="btn btn-ghost btn-danger" style="font-size:12px;">Apagar</a>
+                    </div>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-    {% else %}
-    <div class="empty">Nenhum registo encontrado. <a href="{% url 'registo_criar' %}" style="color:var(--accent)">Adiciona o primeiro.</a></div>
-    {% endif %}
 </div>
-{% include 'workshop/button_style.html' %}
+{% else %}
+<div class="card" style="text-align:center; padding:60px 24px;">
+    <div style="font-size:14px; color:var(--muted); margin-bottom:14px;">Sem registos diários.</div>
+    <a href="{% url 'registo_criar' %}" class="btn btn-primary">Adicionar o primeiro</a>
+</div>
+{% endif %}
 {% endblock %}

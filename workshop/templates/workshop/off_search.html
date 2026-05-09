@@ -1,0 +1,82 @@
+{% extends 'workshop/base.html' %}
+{% block title %}Importar OFF — caltrack{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <div>
+        <h1 class="page-title">Open Food Facts</h1>
+        <div class="page-sub">Pesquisa na base de dados aberta e importa diretamente para o teu catálogo.</div>
+    </div>
+    <div class="page-actions">
+        <a href="{% url 'alimentos' %}" class="btn">← Voltar a alimentos</a>
+    </div>
+</div>
+
+<div class="off-hero">
+    <div>
+        <div class="off-hero-text">
+            Encontra qualquer alimento &mdash; <em>frango, leite, arroz</em>&nbsp;…
+        </div>
+        <form method="get" action="{% url 'off_search' %}" class="off-search">
+            <input type="text" name="q" value="{{ query|default:'' }}" placeholder="Procurar alimentos…" autofocus>
+            <button type="submit" class="btn btn-primary">Pesquisar</button>
+        </form>
+    </div>
+</div>
+
+{% if error %}
+<div class="card" style="border-color:rgba(255,107,107,.3); color:var(--danger); margin-bottom:18px;">{{ error }}</div>
+{% endif %}
+
+{% if query and not error %}
+    {% if results %}
+    <div class="section-head" style="margin-bottom:14px;">
+        <span class="section-title">{{ total }} resultado{{ total|pluralize:",s" }} para "{{ query }}"</span>
+        <span class="section-meta">página {{ page }} / {{ total_pages }}</span>
+    </div>
+
+    <div class="off-results">
+        {% for r in results %}
+        <div class="off-row">
+            <div class="off-thumb">
+                {% if r.imagem %}<img src="{{ r.imagem }}" alt="" loading="lazy">{% endif %}
+            </div>
+            <div>
+                <div class="off-name">{{ r.nome }}</div>
+                <div class="off-brand">{{ r.marca|default:"—" }} · P {{ r.proteina }}g · H {{ r.hidratos }}g · G {{ r.gordura }}g</div>
+            </div>
+            <div class="off-kcal">{{ r.calorias }}<small>kcal/100g</small></div>
+            <form method="post" action="{% url 'off_importar' %}">
+                {% csrf_token %}
+                <input type="hidden" name="nome"       value="{{ r.nome }}">
+                <input type="hidden" name="calorias"  value="{{ r.calorias }}">
+                <input type="hidden" name="proteina"  value="{{ r.proteina }}">
+                <input type="hidden" name="hidratos"  value="{{ r.hidratos }}">
+                <input type="hidden" name="gordura"   value="{{ r.gordura }}">
+                <input type="hidden" name="imagem_url" value="{{ r.imagem }}">
+                <button type="submit" class="btn btn-primary" style="font-size:12px; padding:7px 12px;">Importar</button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div style="display:flex; justify-content:center; gap:10px; margin-top:24px; padding-top:18px; border-top:1px solid var(--border);">
+        {% if prev_page %}
+            <a href="?q={{ query }}&page={{ prev_page }}" class="btn">← Anterior</a>
+        {% else %}
+            <span class="btn" style="opacity:.4; pointer-events:none;">← Anterior</span>
+        {% endif %}
+        <span class="btn btn-ghost" style="font-family:var(--font-mono);">{{ page }} / {{ total_pages }}</span>
+        {% if next_page %}
+            <a href="?q={{ query }}&page={{ next_page }}" class="btn">Seguinte →</a>
+        {% else %}
+            <span class="btn" style="opacity:.4; pointer-events:none;">Seguinte →</span>
+        {% endif %}
+    </div>
+    {% else %}
+    <div class="card" style="text-align:center; padding:48px 24px; color:var(--muted);">
+        Nenhum resultado para "<strong style="color:var(--text)">{{ query }}</strong>".
+    </div>
+    {% endif %}
+{% endif %}
+{% endblock %}

@@ -1,22 +1,25 @@
 {% extends 'workshop/base.html' %}
-{% block title %}Categorias — CalorieTracker{% endblock %}
+{% block title %}Categorias — caltrack{% endblock %}
+
 {% block content %}
-<div class="page-header" style="display:flex; align-items:center; justify-content:space-between;">
+<div class="page-head">
     <div>
-        <h1>Categorias de alimentos</h1>
-        <p>{{ categorias|length }} categorias registadas</p>
+        <h1 class="page-title">Categorias</h1>
+        <div class="page-sub">{{ categorias|length }} categoria{{ categorias|length|pluralize:",s" }} de alimentos</div>
     </div>
-    <a href="{% url 'categoria_criar' %}" class="btn-add">+ Adicionar categoria</a>
+    <div class="page-actions">
+        <a href="{% url 'categoria_criar' %}" class="btn btn-primary">+ Categoria</a>
+    </div>
 </div>
 
-<div class="table-wrap">
-    {% if categorias %}
-    <table>
+{% if categorias %}
+<div class="card table-card">
+    <table class="t">
         <thead>
             <tr>
                 <th>Nome</th>
                 <th>Descrição</th>
-                <th>Nº Alimentos</th>
+                <th>Alimentos</th>
                 <th></th>
             </tr>
         </thead>
@@ -24,16 +27,23 @@
             {% for c in categorias %}
             <tr>
                 <td><strong>{{ c.nome }}</strong></td>
-                <td style="color:var(--muted)">{{ c.descricao|default:"—" }}</td>
-                <td><span class="badge">{{ c.alimentos.count }}</span></td>
-                <td><a href="{% url 'categoria_apagar' c.id %}" class="btn-delete">Apagar</a></td>
+                <td style="color:var(--text-2); max-width:480px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ c.descricao|default:"—" }}</td>
+                <td><span class="pill pill-sky"><span class="pill-dot"></span>{{ c.num_alimentos_user }}</span></td>
+                <td>
+                    <div class="t-actions">
+                        <a href="{% url 'categoria_editar' c.id %}" class="btn btn-ghost" style="font-size:12px;">Editar</a>
+                        <a href="{% url 'categoria_apagar' c.id %}" class="btn btn-ghost btn-danger" style="font-size:12px;">Apagar</a>
+                    </div>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-    {% else %}
-    <div class="empty">Nenhuma categoria encontrada. <a href="{% url 'categoria_criar' %}" style="color:var(--accent)">Adiciona a primeira.</a></div>
-    {% endif %}
 </div>
-{% include 'workshop/button_style.html' %}
+{% else %}
+<div class="card" style="text-align:center; padding:60px 24px;">
+    <div style="font-size:14px; color:var(--muted); margin-bottom:14px;">Sem categorias.</div>
+    <a href="{% url 'categoria_criar' %}" class="btn btn-primary">Criar a primeira</a>
+</div>
+{% endif %}
 {% endblock %}

@@ -1,43 +1,74 @@
 {% extends 'workshop/base.html' %}
-{% block title %}Refeições — CalorieTracker{% endblock %}
+{% block title %}Refeições — caltrack{% endblock %}
+
 {% block content %}
-<div class="page-header" style="display:flex; align-items:center; justify-content:space-between;">
+<div class="page-head">
     <div>
-        <h1>Refeições</h1>
-        <p>{{ refeicoes|length }} refeições registadas</p>
+        <h1 class="page-title">Refeições</h1>
+        <div class="page-sub">{{ refeicoes|length }} refeiç{{ refeicoes|length|pluralize:"ão,ões" }} registada{{ refeicoes|length|pluralize }}</div>
     </div>
-    <a href="{% url 'refeicao_criar' %}" class="btn-add">+ Adicionar refeição</a>
+    <div class="page-actions">
+        <a href="{% url 'refeicao_criar' %}" class="btn btn-primary">+ Refeição</a>
+    </div>
 </div>
 
-<div class="table-wrap">
-    {% if refeicoes %}
-    <table>
-        <thead>
-            <tr>
-                <th>Tipo</th>
-                <th>Data</th>
-                <th>Hora</th>
-                <th>Utilizador</th>
-                <th>Nº Alimentos</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for r in refeicoes %}
-            <tr>
-                <td><span class="badge">{{ r.get_tipo_display }}</span></td>
-                <td style="font-family:var(--mono); font-size:0.82rem;">{{ r.registo.data }}</td>
-                <td style="color:var(--muted); font-family:var(--mono); font-size:0.82rem;">{{ r.hora|default:"—" }}</td>
-                <td>{{ r.registo.utilizador.username }}</td>
-                <td><span class="badge teal">{{ r.itens.count }}</span></td>
-                <td><a href="{% url 'refeicao_apagar' r.id %}" class="btn-delete">Apagar</a></td>
-            </tr>
+{% if refeicoes %}
+<div class="meal-grid">
+    {% for r in refeicoes %}
+    {% with t=r.tipo %}
+    <div class="meal-card">
+        <div class="meal-card-head">
+            <div class="meal-card-icon" style="
+                {% if t == 'pequeno_almoco' %}background:var(--lime-soft); color:var(--lime);
+                {% elif t == 'almoco' %}background:var(--coral-soft); color:var(--coral);
+                {% elif t == 'jantar' %}background:var(--plum-soft); color:var(--plum);
+                {% elif t == 'lanche' %}background:var(--sky-soft); color:var(--sky);
+                {% else %}background:var(--surface-2); color:var(--text-2);{% endif %}
+            ">
+                {% if t == 'pequeno_almoco' %}☕{% elif t == 'almoco' %}🍽{% elif t == 'jantar' %}🌙{% elif t == 'lanche' %}🍎{% else %}•{% endif %}
+            </div>
+            <div>
+                <div class="meal-card-title">{{ r.get_tipo_display }}</div>
+                <div class="meal-card-meta">{{ r.registo.data }}{% if r.hora %} · {{ r.hora }}{% endif %}</div>
+            </div>
+            <div class="meal-card-cal">{{ r.itens.count }}<small> itens</small></div>
+        </div>
+        <div class="meal-card-body" style="max-height:260px; overflow-y:auto;">
+            {% for it in r.itens.all %}
+            <div class="meal-item">
+                <div class="meal-item-thumb">
+                    {% if it.alimento.imagem %}<img src="{{ it.alimento.imagem.url }}" alt="">{% endif %}
+                </div>
+                <div style="flex:1; min-width:0;">
+                    <div class="meal-item-name">{{ it.alimento.nome }}</div>
+                    <div class="meal-item-qty">{{ it.quantidade_g|floatformat:0 }} g</div>
+                </div>
+                <a href="{% url 'refeicao_item_apagar' it.id %}" class="btn-icon" title="Remover" style="color:var(--danger); width:24px; height:24px; flex-shrink:0;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
+                </a>
+            </div>
+            {% empty %}
+            <div style="padding:14px; color:var(--muted); font-size:12.5px; text-align:center;">Sem alimentos.</div>
             {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <div class="empty">Nenhuma refeição encontrada. <a href="{% url 'refeicao_criar' %}" style="color:var(--accent)">Adiciona a primeira.</a></div>
-    {% endif %}
+        </div>
+        <div class="meal-card-foot">
+            <a href="{% url 'refeicao_alimento_criar' r.id %}" class="btn btn-ghost" style="font-size:12px;">+ Alimento</a>
+            <div style="flex:1;"></div>
+            <a href="{% url 'refeicao_editar' r.id %}" class="btn-icon" title="Editar">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4Z"/></svg>
+            </a>
+            <a href="{% url 'refeicao_apagar' r.id %}" class="btn-icon" title="Apagar" style="color:var(--danger);">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
+            </a>
+        </div>
+    </div>
+    {% endwith %}
+    {% endfor %}
 </div>
-{% include 'workshop/button_style.html' %}
+{% else %}
+<div class="card" style="text-align:center; padding:60px 24px;">
+    <div style="font-size:14px; color:var(--muted); margin-bottom:14px;">Ainda não registaste nenhuma refeição.</div>
+    <a href="{% url 'refeicao_criar' %}" class="btn btn-primary">Adicionar a primeira</a>
+</div>
+{% endif %}
 {% endblock %}

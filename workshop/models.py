@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 class CategoriAlimento(models.Model):
     nome = models.CharField(max_length=100)
     descricao = models.TextField(blank=True)
+    utilizador = models.ForeignKey(User, on_delete=models.CASCADE,
+        null=True, blank=True, related_name='categorias')
 
     def __str__(self):
         return self.nome
@@ -19,9 +21,11 @@ class Alimento(models.Model):
     categoria = models.ForeignKey(CategoriAlimento, on_delete=models.SET_NULL,
         null=True, blank=True, related_name='alimentos')
     imagem = models.ImageField(upload_to='alimentos/', blank=True, null=True)
+    utilizador = models.ForeignKey(User, on_delete=models.CASCADE,
+        null=True, blank=True, related_name='alimentos')
 
     def __str__(self):
-        return f"{self.nome} ({self.calorias_por_100g} kcal/100g)"
+        return self.nome
 
 
 class RegistoDiario(models.Model):
@@ -41,7 +45,7 @@ class Refeicao(models.Model):
         ('almoco', 'Almoço'),
         ('jantar', 'Jantar'),
         ('lanche', 'Lanche'),
-        ('outro', 'Outro'),
+        ('outro', 'Snack'),
     ]
 
     registo = models.ForeignKey(RegistoDiario, on_delete=models.CASCADE,

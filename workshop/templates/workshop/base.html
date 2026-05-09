@@ -5,241 +5,105 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}caltrack{% endblock %}</title>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-        :root {
-            --bg: #0f1117;
-            --surface: #1a1d27;
-            --surface2: #22263a;
-            --border: #2e3248;
-            --accent: #6ee7b7;
-            --accent2: #818cf8;
-            --text: #e2e8f0;
-            --muted: #64748b;
-            --danger: #f87171;
-        }
-
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-        }
-
-        /* NAV */
-        nav {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 2rem;
-            height: 60px;
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .nav-logo {
-            font-family: 'DM Mono', monospace;
-            font-size: 1rem;
-            font-weight: 500;
-            color: var(--accent);
-            text-decoration: none;
-            letter-spacing: -0.02em;
-        }
-
-        .nav-logo span { color: var(--muted); }
-
-        .nav-links {
-            display: flex;
-            gap: 0.25rem;
-            list-style: none;
-        }
-
-        .nav-links a {
-            color: var(--muted);
-            text-decoration: none;
-            font-size: 0.875rem;
-            font-weight: 500;
-            padding: 0.4rem 0.85rem;
-            border-radius: 6px;
-            transition: all 0.15s;
-        }
-
-        .nav-links a:hover,
-        .nav-links a.active {
-            color: var(--text);
-            background: var(--surface2);
-        }
-
-        /* MAIN */
-        main {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 2.5rem 2rem;
-        }
-
-        /* PAGE HEADER */
-        .page-header {
-            margin-bottom: 2rem;
-        }
-
-        .page-header h1 {
-            font-size: 1.75rem;
-            font-weight: 600;
-            letter-spacing: -0.03em;
-            color: var(--text);
-        }
-
-        .page-header p {
-            color: var(--muted);
-            font-size: 0.9rem;
-            margin-top: 0.35rem;
-        }
-
-        /* CARD */
-        .card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1.5rem;
-        }
-
-        /* TABLE */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.875rem;
-        }
-
-        thead th {
-            text-align: left;
-            padding: 0.6rem 1rem;
-            font-size: 0.75rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: var(--muted);
-            border-bottom: 1px solid var(--border);
-        }
-
-        tbody tr {
-            border-bottom: 1px solid var(--border);
-            transition: background 0.1s;
-        }
-
-        tbody tr:last-child { border-bottom: none; }
-        tbody tr:hover { background: var(--surface2); }
-
-        tbody td {
-            padding: 0.85rem 1rem;
-            color: var(--text);
-        }
-
-        /* BADGE */
-        .badge {
-            display: inline-block;
-            padding: 0.2rem 0.6rem;
-            border-radius: 99px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            background: var(--surface2);
-            color: var(--accent2);
-            border: 1px solid var(--border);
-        }
-
-        /* PILL (meal type) */
-        .pill {
-            display: inline-block;
-            padding: 0.2rem 0.65rem;
-            border-radius: 99px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            background: rgba(110, 231, 183, 0.1);
-            color: var(--accent);
-            border: 1px solid rgba(110, 231, 183, 0.2);
-        }
-
-        /* STAT CARD */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2.5rem;
-        }
-
-        .stat-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1.25rem 1.5rem;
-            text-decoration: none;
-            transition: border-color 0.15s, transform 0.15s;
-            display: block;
-        }
-
-        .stat-card:hover {
-            border-color: var(--accent2);
-            transform: translateY(-2px);
-        }
-
-        .stat-label {
-            font-size: 0.75rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: var(--muted);
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-value {
-            font-family: 'DM Mono', monospace;
-            font-size: 2rem;
-            font-weight: 500;
-            color: var(--accent);
-            line-height: 1;
-        }
-
-        .stat-sub {
-            font-size: 0.8rem;
-            color: var(--muted);
-            margin-top: 0.35rem;
-        }
-
-        /* EMPTY STATE */
-        .empty {
-            text-align: center;
-            padding: 3rem;
-            color: var(--muted);
-            font-size: 0.9rem;
-        }
-
-        /* MONO TEXT */
-        .mono {
-            font-family: 'DM Mono', monospace;
-            font-size: 0.85rem;
-        }
-    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'workshop/caltrack.css' %}">
 </head>
 <body>
-    <nav>
-        <a href="{% url 'index' %}" class="nav-logo">cal<span>track</span></a>
-        <ul class="nav-links">
-            <li><a href="{% url 'index' %}">Dashboard</a></li>
-            <li><a href="{% url 'categorias' %}">Categorias</a></li>
-            <li><a href="{% url 'alimentos' %}">Alimentos</a></li>
-            <li><a href="{% url 'registos' %}">Registos</a></li>
-            <li><a href="{% url 'refeicoes' %}">Refeições</a></li>
-            <li><a href="{% url 'objetivos' %}">Objetivos</a></li>
-            <li><a href="/admin/">Admin</a></li>
-        </ul>
-    </nav>
+{% url 'index' as url_index %}
+{% url 'categorias' as url_categorias %}
+{% url 'alimentos' as url_alimentos %}
+{% url 'registos' as url_registos %}
+{% url 'refeicoes' as url_refeicoes %}
+{% url 'objetivos' as url_objetivos %}
+{% url 'off_search' as url_off %}
+<div class="app">
+    <aside class="sidebar">
+        <a href="{% url 'index' %}" class="brand">
+            <div class="brand-name">cal<em>track</em></div>
+        </a>
 
-    <main>
+        <div class="nav-section">
+            <div class="nav-label">Diário</div>
+            <a href="{% url 'index' %}" class="nav-item {% if request.path == url_index %}active{% endif %}">
+                <span class="nav-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+                </span>
+                Dashboard
+            </a>
+            <a href="{% url 'registos' %}" class="nav-item {% if request.path == url_registos %}active{% endif %}">
+                <span class="nav-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                </span>
+                Registos
+            </a>
+            <a href="{% url 'refeicoes' %}" class="nav-item {% if request.path == url_refeicoes %}active{% endif %}">
+                <span class="nav-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11h18l-1.5 9a2 2 0 0 1-2 1.7H6.5a2 2 0 0 1-2-1.7Z"/><path d="M7 11V6a5 5 0 0 1 10 0v5"/></svg>
+                </span>
+                Refeições
+            </a>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-label">Catálogo</div>
+            <a href="{% url 'alimentos' %}" class="nav-item {% if request.path == url_alimentos %}active{% endif %}">
+                <span class="nav-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18M3 12h18"/></svg>
+                </span>
+                Alimentos
+            </a>
+            <a href="{% url 'categorias' %}" class="nav-item {% if request.path == url_categorias %}active{% endif %}">
+                <span class="nav-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+                </span>
+                Categorias
+            </a>
+            <a href="{% url 'off_search' %}" class="nav-item {% if request.path == url_off %}active{% endif %}">
+                <span class="nav-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                </span>
+                Importar OFF
+            </a>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-label">Plano</div>
+            <a href="{% url 'objetivos' %}" class="nav-item {% if request.path == url_objetivos %}active{% endif %}">
+                <span class="nav-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
+                </span>
+                Objetivos
+            </a>
+            <a href="/admin/" class="nav-item">
+                <span class="nav-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 6v6c0 5 3.5 8.5 8 10 4.5-1.5 8-5 8-10V6Z"/></svg>
+                </span>
+                Admin
+            </a>
+        </div>
+
+        {% if user.is_authenticated %}
+        <div class="sidebar-foot">
+            <div class="avatar">{{ user.username|slice:":1"|upper }}</div>
+            <div class="avatar-info">
+                <div class="avatar-name">{{ user.username }}</div>
+                <div class="avatar-mail">sessão ativa</div>
+            </div>
+            <form method="post" action="{% url 'logout' %}" style="margin:0;">
+                {% csrf_token %}
+                <button type="submit" class="btn-icon" title="Sair" aria-label="Sair">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+                </button>
+            </form>
+        </div>
+        {% endif %}
+    </aside>
+
+    <main class="main">
         {% block content %}{% endblock %}
     </main>
+</div>
 </body>
 </html>

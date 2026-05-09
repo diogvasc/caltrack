@@ -1,47 +1,69 @@
 {% extends 'workshop/base.html' %}
-{% block title %}Objetivos — CalorieTracker{% endblock %}
-{% block content %}
-<div class="page-header" style="display:flex; align-items:center; justify-content:space-between;">
-    <div>
-        <h1>Objetivos</h1>
-        <p>{{ objetivos|length }} objetivos definidos</p>
-    </div>
-    <a href="{% url 'objetivo_criar' %}" class="btn-add">+ Adicionar objetivo</a>
-</div>
+{% block title %}Objetivo — caltrack{% endblock %}
 
-<div class="table-wrap">
-    {% if objetivos %}
-    <table>
-        <thead>
-            <tr>
-                <th>Utilizador</th>
-                <th>Calorias alvo</th>
-                <th>Proteína (g)</th>
-                <th>Hidratos (g)</th>
-                <th>Gordura (g)</th>
-                <th>Início</th>
-                <th>Fim</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for o in objetivos %}
-            <tr>
-                <td><strong>{{ o.utilizador.username }}</strong></td>
-                <td><span class="badge teal">{{ o.calorias_alvo }} kcal</span></td>
-                <td>{{ o.proteina_alvo_g }}</td>
-                <td>{{ o.hidratos_alvo_g }}</td>
-                <td>{{ o.gordura_alvo_g }}</td>
-                <td style="font-family:var(--mono); font-size:0.82rem;">{{ o.data_inicio }}</td>
-                <td style="font-family:var(--mono); font-size:0.82rem;">{{ o.data_fim|default:"—" }}</td>
-                <td><a href="{% url 'objetivo_apagar' o.id %}" class="btn-delete">Apagar</a></td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <div class="empty">Nenhum objetivo encontrado. <a href="{% url 'objetivo_criar' %}" style="color:var(--accent)">Adiciona o primeiro.</a></div>
+{% block content %}
+<div class="page-head">
+    <div>
+        <h1 class="page-title">Objetivo</h1>
+        <div class="page-sub">Metas diárias de nutrição</div>
+    </div>
+    {% if not objetivo %}
+    <div class="page-actions">
+        <a href="{% url 'objetivo_criar' %}" class="btn btn-primary">Definir objetivo</a>
+    </div>
     {% endif %}
 </div>
-{% include 'workshop/button_style.html' %}
+
+{% if objetivo %}
+<div class="card" style="max-width:580px;">
+
+    <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:28px;">
+        <div>
+            <div style="font-size:10.5px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); font-weight:600; margin-bottom:10px;">Calorias diárias</div>
+            <div style="font-family:var(--font-mono); font-size:56px; font-weight:500; letter-spacing:-0.025em; line-height:1; color:var(--lime);">
+                {{ objetivo.calorias_alvo|floatformat:0 }}<span style="font-size:15px; color:var(--muted); font-weight:400; margin-left:6px;">kcal/dia</span>
+            </div>
+        </div>
+        <a href="{% url 'objetivo_editar' objetivo.id %}" class="btn btn-primary" style="margin-top:4px;">Editar</a>
+    </div>
+
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:24px;">
+        <div style="padding:16px 18px; background:var(--bg-2); border-radius:var(--r-md); border:1px solid var(--border);">
+            <div style="font-family:var(--font-mono); font-size:28px; font-weight:500; color:var(--sky); line-height:1;">
+                {{ objetivo.proteina_alvo_g|floatformat:0 }}<span style="font-size:12px; color:var(--muted); margin-left:3px;">g</span>
+            </div>
+            <div style="font-size:10.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-top:6px;">Proteína</div>
+        </div>
+        <div style="padding:16px 18px; background:var(--bg-2); border-radius:var(--r-md); border:1px solid var(--border);">
+            <div style="font-family:var(--font-mono); font-size:28px; font-weight:500; color:var(--plum); line-height:1;">
+                {{ objetivo.hidratos_alvo_g|floatformat:0 }}<span style="font-size:12px; color:var(--muted); margin-left:3px;">g</span>
+            </div>
+            <div style="font-size:10.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-top:6px;">Hidratos</div>
+        </div>
+        <div style="padding:16px 18px; background:var(--bg-2); border-radius:var(--r-md); border:1px solid var(--border);">
+            <div style="font-family:var(--font-mono); font-size:28px; font-weight:500; color:var(--coral); line-height:1;">
+                {{ objetivo.gordura_alvo_g|floatformat:0 }}<span style="font-size:12px; color:var(--muted); margin-left:3px;">g</span>
+            </div>
+            <div style="font-size:10.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-top:6px;">Gordura</div>
+        </div>
+    </div>
+
+    <div style="display:flex; align-items:center; justify-content:space-between; padding-top:18px; border-top:1px dashed var(--border);">
+        <div style="font-family:var(--font-mono); font-size:12px; color:var(--muted);">
+            Desde {{ objetivo.data_inicio }}{% if objetivo.data_fim %} · até {{ objetivo.data_fim }}{% endif %}
+        </div>
+        <a href="{% url 'objetivo_apagar' objetivo.id %}" class="btn btn-ghost btn-danger" style="font-size:12px;">Remover</a>
+    </div>
+</div>
+
+{% else %}
+<div class="card" style="text-align:center; padding:64px 24px; max-width:580px;">
+    <div style="font-size:36px; margin-bottom:18px;">🎯</div>
+    <div style="font-size:15px; font-weight:600; margin-bottom:8px;">Sem objetivo definido</div>
+    <div style="font-size:13px; color:var(--muted); margin-bottom:28px; max-width:340px; margin-left:auto; margin-right:auto;">
+        Define as tuas metas diárias de calorias e macros para começar a acompanhar o progresso.
+    </div>
+    <a href="{% url 'objetivo_criar' %}" class="btn btn-primary">Definir objetivo</a>
+</div>
+{% endif %}
 {% endblock %}

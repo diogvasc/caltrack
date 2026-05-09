@@ -1,82 +1,72 @@
 {% extends 'workshop/base.html' %}
-
-{% block title %}Alimentos — CalorieTracker{% endblock %}
+{% block title %}Alimentos — caltrack{% endblock %}
 
 {% block content %}
-<div class="page-header" style="display:flex; align-items:center; justify-content:space-between;">
+<div class="page-head">
     <div>
-        <h1>Alimentos</h1>
-        <p>{{ alimentos|length }} alimentos registados</p>
+        <h1 class="page-title">Alimentos</h1>
+        <div class="page-sub">{{ alimentos|length }} alimento{{ alimentos|length|pluralize }} no catálogo</div>
     </div>
-    <a href="{% url 'alimento_criar' %}" class="btn-add">+ Adicionar alimento</a>
+    <div class="page-actions">
+        <a href="{% url 'off_search' %}" class="btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 21h16"/></svg>
+            Importar OFF
+        </a>
+        <a href="{% url 'alimento_criar' %}" class="btn btn-primary">+ Adicionar</a>
+    </div>
 </div>
 
-<div class="table-wrap">
-    {% if alimentos %}
-    <table>
-        <thead>
-            <tr>
-                <th>Nome</th>
-                <th>Categoria</th>
-                <th>Calorias (kcal/100g)</th>
-                <th>Proteína (g)</th>
-                <th>Hidratos (g)</th>
-                <th>Gordura (g)</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for a in alimentos %}
-            <tr>
-                <td><strong>{{ a.nome }}</strong></td>
-                <td>
-                    {% if a.categoria %}
-                        <span class="badge">{{ a.categoria.nome }}</span>
-                    {% else %}
-                        <span style="color:var(--muted)">—</span>
-                    {% endif %}
-                </td>
-                <td><span class="badge teal">{{ a.calorias_por_100g }}</span></td>
-                <td>{{ a.proteina_g }}</td>
-                <td>{{ a.hidratos_g }}</td>
-                <td>{{ a.gordura_g }}</td>
-                <td>
-                    <a href="{% url 'alimento_apagar' a.id %}" class="btn-delete">Apagar</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <div class="empty">Nenhum alimento encontrado. <a href="{% url 'alimento_criar' %}" style="color:var(--accent)">Adiciona o primeiro.</a></div>
-    {% endif %}
+{% if alimentos %}
+<div class="food-grid">
+    {% for a in alimentos %}
+    <div class="food-card">
+        <a href="{% url 'alimento_editar' a.id %}" style="display:contents;">
+            <div class="food-img">
+                {% if a.imagem %}
+                    <img src="{{ a.imagem.url }}" alt="{{ a.nome }}" loading="lazy">
+                {% else %}
+                    <div class="food-img-placeholder">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" style="opacity:.35;">
+                            <path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2z"/>
+                            <path d="M12 6v2M8.5 8.5l1.5 1.5M6 12h2M8.5 15.5l1.5-1.5M12 16v2M15.5 15.5l-1.5-1.5M18 12h-2M15.5 8.5l-1.5 1.5"/>
+                        </svg>
+                    </div>
+                {% endif %}
+                {% if a.categoria %}
+                <span class="food-img-cat">{{ a.categoria.nome }}</span>
+                {% endif %}
+                <span class="food-img-kcal">{{ a.calorias_por_100g|floatformat:0 }} kcal</span>
+            </div>
+            <div class="food-body">
+                <div class="food-name">{{ a.nome }}</div>
+                <div class="food-cat">por 100 g</div>
+                <div class="food-macros">
+                    <div class="food-macro">
+                        <div class="food-macro-val" style="color:var(--sky)">{{ a.proteina_g|floatformat:1 }}</div>
+                        <div class="food-macro-label">Prot</div>
+                    </div>
+                    <div class="food-macro">
+                        <div class="food-macro-val" style="color:var(--plum)">{{ a.hidratos_g|floatformat:1 }}</div>
+                        <div class="food-macro-label">Hidr</div>
+                    </div>
+                    <div class="food-macro">
+                        <div class="food-macro-val" style="color:var(--coral)">{{ a.gordura_g|floatformat:1 }}</div>
+                        <div class="food-macro-label">Gord</div>
+                    </div>
+                </div>
+            </div>
+        </a>
+        <div style="padding:10px 14px; border-top:1px solid var(--border); display:flex; gap:6px; justify-content:flex-end;">
+            <a href="{% url 'alimento_editar' a.id %}" class="btn btn-ghost" style="font-size:12px;">Editar</a>
+            <a href="{% url 'alimento_apagar' a.id %}" class="btn btn-ghost btn-danger" style="font-size:12px;">Apagar</a>
+        </div>
+    </div>
+    {% endfor %}
 </div>
-
-<style>
-.btn-add {
-    display: inline-block;
-    padding: 0.5rem 1.1rem;
-    background: var(--accent);
-    color: #0f0f0f;
-    border-radius: 8px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    text-decoration: none;
-    transition: opacity 0.15s;
-}
-.btn-add:hover { opacity: 0.85; }
-
-.btn-delete {
-    display: inline-block;
-    padding: 0.25rem 0.7rem;
-    background: rgba(224,68,68,0.1);
-    color: #e04444;
-    border: 1px solid rgba(224,68,68,0.2);
-    border-radius: 6px;
-    font-size: 0.75rem;
-    text-decoration: none;
-    transition: background 0.15s;
-}
-.btn-delete:hover { background: rgba(224,68,68,0.2); }
-</style>
+{% else %}
+<div class="card" style="text-align:center; padding:60px 24px;">
+    <div style="font-size:14px; color:var(--muted); margin-bottom:14px;">Sem alimentos no catálogo.</div>
+    <a href="{% url 'alimento_criar' %}" class="btn btn-primary">Adicionar o primeiro</a>
+</div>
+{% endif %}
 {% endblock %}

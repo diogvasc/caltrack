@@ -1,38 +1,163 @@
 {% extends 'workshop/base.html' %}
-
-{% block title %}Dashboard – CalorieTracker{% endblock %}
+{% load l10n %}
+{% block title %}Dashboard — caltrack{% endblock %}
 
 {% block content %}
-<div class="page-header">
-    <h1>Dashboard</h1>
-    <p>Resumo da base de dados</p>
+<div class="page-head">
+    <div>
+        <h1 class="page-title">Olá, <em>{{ user.username|title }}</em></h1>
+        <div class="page-sub">Resumo de hoje · {% now "l, j \d\e F" %}</div>
+    </div>
+    <div class="page-actions">
+        <a href="{% url 'refeicao_criar' %}" class="btn">+ Refeição</a>
+        <a href="{% url 'registo_criar' %}" class="btn btn-primary">+ Registo</a>
+    </div>
 </div>
 
-<div class="stats-grid">
-    <a href="{% url 'categorias' %}" class="stat-card">
-        <div class="stat-label">Categorias</div>
-        <div class="stat-value">{{ num_categorias }}</div>
-        <div class="stat-sub">categorias de alimentos</div>
+<div class="quick-strip" style="grid-template-columns:repeat(4,1fr);">
+    <a href="{% url 'alimentos' %}" class="quick-card">
+        <div class="quick-label">Alimentos</div>
+        <div class="quick-value">{{ num_alimentos }}</div>
+        <div class="quick-foot">no catálogo</div>
     </a>
-    <a href="{% url 'alimentos' %}" class="stat-card">
-        <div class="stat-label">Alimentos</div>
-        <div class="stat-value">{{ num_alimentos }}</div>
-        <div class="stat-sub">alimentos registados</div>
+    <a href="{% url 'categorias' %}" class="quick-card">
+        <div class="quick-label">Categorias</div>
+        <div class="quick-value">{{ num_categorias }}</div>
+        <div class="quick-foot">organizadas</div>
     </a>
-    <a href="{% url 'registos' %}" class="stat-card">
-        <div class="stat-label">Registos</div>
-        <div class="stat-value">{{ num_registos }}</div>
-        <div class="stat-sub">registos diários</div>
+    <a href="{% url 'registos' %}" class="quick-card">
+        <div class="quick-label">Registos</div>
+        <div class="quick-value">{{ num_registos }}</div>
+        <div class="quick-foot">dias acompanhados</div>
     </a>
-    <a href="{% url 'refeicoes' %}" class="stat-card">
-        <div class="stat-label">Refeições</div>
-        <div class="stat-value">{{ num_refeicoes }}</div>
-        <div class="stat-sub">refeições no total</div>
+    <a href="{% url 'refeicoes' %}" class="quick-card">
+        <div class="quick-label">Refeições</div>
+        <div class="quick-value">{{ num_refeicoes }}</div>
+        <div class="quick-foot">no total</div>
     </a>
-    <a href="{% url 'objetivos' %}" class="stat-card">
-        <div class="stat-label">Objetivos</div>
-        <div class="stat-value">{{ num_objetivos }}</div>
-        <div class="stat-sub">objetivos definidos</div>
-    </a>
+</div>
+
+<div class="dash-grid">
+    <div class="hero-card">
+        <div class="ring-wrap">
+            <svg class="ring-svg" viewBox="0 0 200 200">
+                <circle class="ring-bg" cx="100" cy="100" r="90"/>
+                {% localize off %}<circle class="ring-fg" cx="100" cy="100" r="90"
+                        style="stroke-dasharray: 565; stroke-dashoffset: {{ ring_offset }};"/>{% endlocalize %}
+            </svg>
+            <div class="ring-center">
+                <div class="ring-num">{{ calorias_hoje|floatformat:0 }}</div>
+                <div class="ring-unit">kcal hoje</div>
+                {% if objetivo %}
+                <div class="ring-of">de {{ objetivo.calorias_alvo|floatformat:0 }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="hero-side">
+            <div class="hero-eyebrow">Energia · hoje</div>
+            <div class="hero-headline">
+                {% if objetivo %}
+                    {% if calorias_restantes >= 0 %}
+                        Faltam <em>{{ calorias_restantes|floatformat:0 }} kcal</em> para o objetivo do dia.
+                    {% else %}
+                        Excedeste em <em>{{ calorias_restantes|floatformat:0|cut:"-" }} kcal</em> o objetivo do dia.
+                    {% endif %}
+                {% else %}
+                    Define um <em>objetivo</em> para começar a acompanhar.
+                {% endif %}
+            </div>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <div class="hero-stat-label">Consumido</div>
+                    <div class="hero-stat-val">{{ calorias_hoje|floatformat:0 }}</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-label">{% if calorias_restantes >= 0 %}Restante{% else %}Excedido{% endif %}</div>
+                    <div class="hero-stat-val" style="{% if calorias_restantes < 0 %}color:var(--coral);{% endif %}">{{ calorias_restantes|floatformat:0|cut:"-" }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card macro-card">
+        <div class="section-head">
+            <span class="section-title">Macros</span>
+            <span class="section-meta">progresso de hoje</span>
+        </div>
+
+        {% if objetivo %}
+        <div class="macro-list">
+            <div class="macro-row">
+                <div class="macro-top">
+                    <div class="macro-name"><span class="macro-dot" style="background:var(--lime)"></span>Energia</div>
+                    <div class="macro-vals">{{ calorias_hoje|floatformat:0 }} <span class="of">/ {{ objetivo.calorias_alvo|floatformat:0 }} kcal</span></div>
+                </div>
+                {% localize off %}<div class="bar"><div class="bar-fill" style="width:{{ pct_calorias }}%; background:var(--lime);"></div></div>{% endlocalize %}
+            </div>
+            <div class="macro-row">
+                <div class="macro-top">
+                    <div class="macro-name"><span class="macro-dot" style="background:var(--sky)"></span>Proteína</div>
+                    <div class="macro-vals">{{ proteina_hoje|floatformat:1 }} <span class="of">/ {{ objetivo.proteina_alvo_g|floatformat:0 }} g</span></div>
+                </div>
+                {% localize off %}<div class="bar"><div class="bar-fill" style="width:{{ pct_proteina }}%; background:var(--sky);"></div></div>{% endlocalize %}
+            </div>
+            <div class="macro-row">
+                <div class="macro-top">
+                    <div class="macro-name"><span class="macro-dot" style="background:var(--plum)"></span>Hidratos</div>
+                    <div class="macro-vals">{{ hidratos_hoje|floatformat:1 }} <span class="of">/ {{ objetivo.hidratos_alvo_g|floatformat:0 }} g</span></div>
+                </div>
+                {% localize off %}<div class="bar"><div class="bar-fill" style="width:{{ pct_hidratos }}%; background:var(--plum);"></div></div>{% endlocalize %}
+            </div>
+            <div class="macro-row">
+                <div class="macro-top">
+                    <div class="macro-name"><span class="macro-dot" style="background:var(--coral)"></span>Gordura</div>
+                    <div class="macro-vals">{{ gordura_hoje|floatformat:1 }} <span class="of">/ {{ objetivo.gordura_alvo_g|floatformat:0 }} g</span></div>
+                </div>
+                {% localize off %}<div class="bar"><div class="bar-fill" style="width:{{ pct_gordura }}%; background:var(--coral);"></div></div>{% endlocalize %}
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-pad" style="padding:24px 0; color:var(--muted); font-size:13px;">
+            Sem objetivo ativo. <a href="{% url 'objetivo_criar' %}" style="color:var(--lime)">Criar objetivo →</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card timeline-card" style="margin-top:20px;">
+    <div class="timeline-head">
+        <div class="section-head" style="margin-bottom:0;">
+            <span class="section-title">Refeições de hoje</span>
+            <a href="{% url 'refeicao_criar' %}" class="btn btn-ghost" style="font-size:12px;">+ Refeição</a>
+        </div>
+    </div>
+    <div class="timeline-list">
+        {% for entry in refeicoes_hoje %}
+        {% with r=entry.refeicao t=entry.refeicao.tipo %}
+        <div class="meal-row">
+            <div class="meal-time">{{ r.hora|default:"—" }}</div>
+            <div class="meal-icon" style="
+                {% if t == 'pequeno_almoco' %}background:var(--lime-soft); color:var(--lime);
+                {% elif t == 'almoco' %}background:var(--coral-soft); color:var(--coral);
+                {% elif t == 'jantar' %}background:var(--plum-soft); color:var(--plum);
+                {% elif t == 'lanche' %}background:var(--sky-soft); color:var(--sky);
+                {% else %}background:var(--surface-2); color:var(--text-2);{% endif %}
+            ">
+                {% if t == 'pequeno_almoco' %}☕{% elif t == 'almoco' %}🍽{% elif t == 'jantar' %}🌙{% elif t == 'lanche' %}🍎{% else %}•{% endif %}
+            </div>
+            <div>
+                <div class="meal-title">{{ r.get_tipo_display }}</div>
+                <div class="meal-sub">{{ r.itens.count }} item{% if r.itens.count != 1 %}s{% endif %}</div>
+            </div>
+            <div class="meal-cal">{{ entry.calorias|floatformat:0 }}<small> kcal</small></div>
+        </div>
+        {% endwith %}
+        {% empty %}
+        <div style="padding:32px 24px; text-align:center; color:var(--muted); font-size:13px;">
+            Sem refeições registadas hoje. <a href="{% url 'refeicao_criar' %}" style="color:var(--lime);">Adicionar →</a>
+        </div>
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}
